@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <conio.h>
 #include <string.h>
+
 #define s 1000
 
 FILE *data;
@@ -10,6 +11,8 @@ time_t rawtime;
 struct tm *info;
 char a,menu;
 char status[s][s],belum[]="Belum Kembali",sudah[]="Sudah Kembali";
+char SnamaBarang[s][s];
+int SkodeBarang[s][s],SjumlahBarang[s][s];
 char namaBarang[s][s],CjumlahBarang[s][s],CkodeBarang[s][s],CjumlahPinjam[s][s],CkodePinjam[s][s];
 char namaPinjam[s][s],lamaPinjam[s][s],waktuPinjam[s][s],barangPinjam[s][s],waktuKembali[s][s];
 int kodeBarang[s][s],jumlahBarang[s][s],jumlahPinjam[s][s],kodePinjam[s][s];
@@ -17,7 +20,7 @@ int i=0,j=0,flag;
 
 void menuAwal(){
     system("cls");
-    printf("---- Sistem Data Logistik ITTS ----\n");
+    printf("\n---- Sistem Data Logistik ITTS ----\n");
     printf("-------------- Menu ---------------\n");
     printf(" 1. Daftar Barang\n");
     printf(" 2. Tambah Barang\n");
@@ -28,8 +31,103 @@ void menuAwal(){
     printf(" 7. Laporan Peminjaman\n");
     printf(" 8. Hapus Laporan Peminjaman\n");
     printf(" 9. Keluar Sistem\n");
-    printf("------------------------------------\n");
-    printf(" Masukkan pilihan anda [1 s.d. 8] = ");
+    printf("------------------------------------\n\n");
+    printf(" Masukkan pilihan anda [1 s.d. 9] = ");
+}
+
+void sortBarang(){
+    for(int i=1;i<s;i++){
+        strcpy(SnamaBarang[i],namaBarang[i]);
+        SkodeBarang[i][0] = kodeBarang[i][0];
+        SjumlahBarang[i][0] = jumlahBarang[i][0];
+    }
+    for(int i=1; i<s; i++){
+        int min=i;
+        for(int j=i; j<s; j++){
+            if(SjumlahBarang[j][0]>SjumlahBarang[min][0]){
+            min=j;
+            }
+        }
+        int temp;
+        temp=SjumlahBarang[i][0];
+        SjumlahBarang[i][0]=SjumlahBarang[min][0];
+        SjumlahBarang[min][0]=temp;
+        int tempp;
+        tempp=SkodeBarang[i][0];
+        SkodeBarang[i][0]=SkodeBarang[min][0];
+        SkodeBarang[min][0]=tempp;
+        char temps[s][s];
+        strcpy(temps[i],SnamaBarang[i]);
+        strcpy(SnamaBarang[i],SnamaBarang[min]);
+        strcpy(SnamaBarang[min],temps[i]);
+	}
+}
+void daftarBarang()
+{
+    printf("\n-------------- Daftar Barang ---------------\n\n");
+    printf(" 1. Daftar Barang Dari Kode Barang Terkecil\n");
+    printf(" 2. Daftar Barang Dari Jumlah Barang Terbesar\n");
+    printf(" 3. Pencarian Barang\n\n");
+    printf(" Masukkan pilihan anda [1 s.d. 3] = ");
+    scanf(" %c",&a);
+    if(a=='1'){
+        system("cls");
+        printf("\n");
+        printf("\t\t\tDaftar Barang\n");
+        printf("------------------------------------------------------------------\n");
+        printf(" Kode Barang\tNama Barang\tJumlah Barang\n");
+        printf("------------------------------------------------------------------\n");
+        for(i=0;i<s;i++){
+            if(kodeBarang[i][0] == '\0' ){
+                continue;
+        }
+        printf(" %i\t\t%s\t\t%i\n",kodeBarang[i][0],namaBarang[i],jumlahBarang[i][0]);
+    }
+        printf("\nKetik apa saja untuk kembali ke menu awal : ");
+        getch();
+        printf("\n");
+    }
+    if(a=='2'){
+        system("cls");
+        sortBarang();
+        printf("\n");
+        printf("\t\t\tDaftar Barang\n");
+        printf("------------------------------------------------------------------\n");
+        printf(" Kode Barang\tNama Barang\tJumlah Barang\n");
+        printf("------------------------------------------------------------------\n");
+        for(i=0;i<s;i++){
+            if(SkodeBarang[i][0] == '\0' ){
+                continue;
+        }
+        printf(" %i\t\t%s\t\t%i\n",SkodeBarang[i][0],SnamaBarang[i],SjumlahBarang[i][0]);
+    }
+        printf("\nKetik apa saja untuk kembali ke menu awal : ");
+        getch();
+        printf("\n");
+    }
+    if(a=='3'){
+        menu1:
+        system("cls");
+        printf("\n");
+        printf("\n-------------- Pencarian Barang ---------------\n\n");
+        printf(" Masukkan Kode Barang : ");
+        scanf(" %i",&i);
+        if(kodeBarang[i][0] == '\0'){
+            system("cls");
+            printf("\n---------- Perbarui Jumlah Barang -----------\n\n");
+            printf(" Kode Barang Tidak Valid\n");
+            printf("\n Ketik apa saja untuk kembali ke menu awal : ");
+            getch();
+            printf("\n");
+            goto menu1;
+        }
+        printf(" Kode Barang\t: %i\n",kodeBarang[i][0]);
+        printf(" Nama Barang\t: %s\n",namaBarang[i]);
+        printf(" Jumlah Barang\t: %i\n\n",jumlahBarang[i][0]);
+        printf("\n Ketik apa saja untuk kembali ke menu awal : ");
+        getch();
+        printf("\n");
+    }
 }
 
 void readPinjam()
@@ -245,12 +343,13 @@ void readBarang()
 
 void tambahBarang()
 {
-    menu2:
-		printf("---------- Tambah Barang -----------\n");
+        menu2:
+        i=0;
+		printf("\n---------- Tambah Barang -----------\n\n");
         do{
             flag=1;
-            printf(" Kode Barang\t: ");
-            scanf(" %i",&i);
+            printf(" Kode Barang (1-999)\t: ");
+            scanf("%i",&i);
             if(kodeBarang[i][0] != '\0'){
                 printf(" Kode ini sudah terpakai, masukkan kode lain\n\n");
                 flag=0;
@@ -271,8 +370,18 @@ void tambahBarang()
 
 void updateBarang()
 {
+    printf("\n---------- Perbarui Jumlah Barang -----------\n\n");
     printf(" Masukkan Kode Barang : ");
     scanf(" %i",&i);
+    if(kodeBarang[i][0] == '\0'){
+        system("cls");
+        printf("\n---------- Perbarui Jumlah Barang -----------\n\n");
+        printf(" Kode Barang Tidak Valid\n");
+        printf("\n Ketik apa saja untuk kembali ke menu awal : ");
+        getch();
+        printf("\n");
+        return;
+    }
     printf(" Kode Barang : %i\n",kodeBarang[i][0]);
     printf(" Nama Barang : %s\n",namaBarang[i]);
     printf(" Jumlah Barang Saat Ini : %i\n\n",jumlahBarang[i][0]);
@@ -283,12 +392,14 @@ void updateBarang()
 void hapusBarang()
 {
     menu4:
+        system("cls");
+        printf("\n---------- Hapus Data Barang -----------\n\n");
         printf(" Kode barang yang akan dihapus\t: ");
         scanf(" %i",&i);
         namaBarang[i][0] = '\0';
         kodeBarang[i][0] = '\0';
         jumlahBarang[i][0] = '\0';
-        printf(" Barang berhasil dihapus dari daftar barang\n Apakah Anda ingin menghapus data lagi? (y/n) : ");
+        printf(" Barang berhasil dihapus dari daftar barang\n\n Apakah Anda ingin menghapus data lagi? (y/n) : ");
         scanf(" %c",&a);
         if(a=='y'){
             goto menu4;
@@ -309,24 +420,6 @@ void hapusPinjam()
         status[i][0] = '\0';
         }
         printf(" Data pinjam berhasil dihapus\n\n Ketik apa saja untuk kembali ke menu awal : ");
-        getch();
-        printf("\n");
-}
-
-void daftarBarang()
-{
-    printf("\n");
-        printf("\t\t\tDaftar Barang\n");
-        printf("------------------------------------------------------------------\n");
-        printf(" Kode Barang\tNama Barang\tJumlah Barang\n");
-        printf("------------------------------------------------------------------\n");
-        for(i=0;i<s;i++){
-            if(kodeBarang[i][0] == '\0' ){
-                continue;
-        }
-        printf(" %i\t\t%s\t\t%i\n",kodeBarang[i][0],namaBarang[i],jumlahBarang[i][0]);
-    }
-        printf("\nKetik apa saja untuk kembali ke menu awal : ");
         getch();
         printf("\n");
 }
