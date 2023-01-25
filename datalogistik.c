@@ -14,13 +14,14 @@ struct tm *info;
 char a,menu;
 int i=0,j=0,flag;
 
-char status[s][s],belum[]="Belum Kembali",sudah[]="Sudah Kembali";
 char SnamaBarang[s][s];
 int SkodeBarang[s][s],SjumlahBarang[s][s];
 
 char namaBarang[s][s],CjumlahBarang[s][s],CkodeBarang[s][s],CjumlahPinjam[s][s],CkodePinjam[s][s];
 
 char namaPinjam[s][s],lamaPinjam[s][s],waktuPinjam[s][s],barangPinjam[s][s],waktuKembali[s][s];
+char status[s][s],belum[]="Belum Kembali",sudah[]="Sudah Kembali";
+
 int kodeBarang[s][s],jumlahBarang[s][s],jumlahPinjam[s][s],kodePinjam[s][s];
 
 void menuAwal(){
@@ -487,7 +488,6 @@ void pinjamBarang()
     printf("\n--------------- Data Peminjaman Barang ---------------\n");
     printf(" Kode Pinjaman\t: %i\n",kodePinjam[i][0]);
     printf(" Nama Peminjam\t: %s\n",namaPinjam[i]);
-    printf(" Kode Barang\t: %i\n",kodeBarang[i][0]);
     printf(" Nama Barang\t: %s\n",barangPinjam[i]);
     printf(" Jumlah barang\t: %i\n",jumlahPinjam[i][0]);
     printf(" Waktu Pinjam\t: %s\n",waktuPinjam[i]);
